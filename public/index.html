@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Silent Sequence</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #121212;
+      color: #ffffff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .container-fluid {
+      max-width: 480px;
+    }
+    .card {
+      background-color: #1e1e1e;
+      border: none;
+      border-radius: 15px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+    .btn {
+      border-radius: 25px;
+      text-transform: uppercase;
+      font-weight: bold;
+      letter-spacing: 1px;
+      transition: all 0.3s ease;
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    .btn-primary {
+      background-color: #4a90e2;
+      border: none;
+    }
+    .btn-secondary {
+      background-color: #34495e;
+      border: none;
+    }
+    .btn-success {
+      background-color: #27ae60;
+      border: none;
+    }
+    .form-control {
+      background-color: #2c2c2c;
+      border: none;
+      color: #ffffff;
+      border-radius: 25px;
+    }
+    .form-control:focus {
+      background-color: #3c3c3c;
+      box-shadow: none;
+      color: #ffffff;
+    }
+    #playerCard {
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    #playerCard:hover {
+      transform: scale(1.05);
+    }
+    #playerCard.placed {
+      background-color: #27ae60 !important;
+    }
+    .list-group-item {
+      background-color: #2c2c2c;
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      margin-bottom: 5px;
+    }
+    #cardNumber {
+      font-size: 5rem;
+      font-weight: bold;
+    }
+    .alert {
+      border-radius: 15px;
+    }
+    #instructions {
+      font-size: 0.9rem;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <div class="container-fluid min-vh-100 d-flex flex-column justify-content-center py-5">
+    <!-- Room Code and Player Name Entry -->
+    <div id="gameSetup" class="mb-4">
+      <div class="card bg-dark text-light mb-4">
+        <div class="card-body p-4">
+          <h2 class="card-title text-center mb-4">Silent Sequence</h2>
+          <div class="mb-3">
+            <label for="roomCode" class="form-label">Room Code</label>
+            <input type="text" id="roomCode" class="form-control" placeholder="Enter Room Code">
+          </div>
+          <div class="mb-3">
+            <label for="playerName" class="form-label">Name</label>
+            <input type="text" id="playerName" class="form-control" placeholder="Enter Your Name">
+          </div>
+          <button class="btn btn-primary w-100 mb-2" onclick="createRoom()">Create Room</button>
+          <button class="btn btn-secondary w-100" onclick="joinRoom()">Join Room</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Game Board -->
+    <div id="gameBoard" class="d-none">
+      <div class="card bg-dark text-light mb-3">
+        <div class="card-body p-4">
+          <h3 id="roomTitle" class="card-title text-center mb-3"></h3>
+          <h5 class="text-center mb-3">Players:</h5>
+          <ul id="playerList" class="list-group list-group-flush mb-3"></ul>
+          <p class="text-center">Cards placed: <span id="placedCardsCount">0</span></p>
+          <p id="instructions" class="text-center mt-3"></p>
+        </div>
+      </div>
+      
+      <div class="card bg-primary text-light mb-3" id="playerCard" onclick="placeCard()">
+        <div class="card-body text-center py-5">
+          <h1 id="cardNumber" class="mb-0"></h1>
+          <p class="lead mt-3 mb-0">Tap to Place Your Card</p>
+        </div>
+      </div>
+
+      <button id="startGameBtn" class="btn btn-success w-100 mb-3 d-none" onclick="startGame()">Start Game</button>
+      <button id="newRoundBtn" class="btn btn-secondary w-100 mb-3 d-none" onclick="newRound()">New Round</button>
+      <div id="result" class="alert d-none"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
