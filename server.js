@@ -97,6 +97,9 @@ function assignNumbers(roomCode) {
   rooms[roomCode].players.forEach((player, index) => {
     io.to(player.id).emit('assignedNumber', numbers[index]);
   });
+  
+  // Add this line to emit the new round event to all players
+  io.to(roomCode).emit('newRoundStarted');
 }
 
 function generateUniqueRandomNumbers(count, min, max) {
