@@ -2,6 +2,7 @@ const socket = io();
 let playerNumber = 0;
 let isHost = false;
 let roomCode = '';
+let hasPlacedCard = false;
 
 function createRoom() {
   roomCode = document.getElementById('roomCode').value;
@@ -30,10 +31,11 @@ function startGame() {
 }
 
 function placeCard() {
-  if (playerNumber === 0) return;
+  if (playerNumber === 0 || hasPlacedCard) return;
   socket.emit('placeCard', { roomCode, number: playerNumber });
   document.getElementById('playerCard').classList.add('placed');
   document.getElementById('instructions').innerText = "Waiting for other players...";
+  hasPlacedCard = true;
 }
 
 function newRound() {
@@ -67,11 +69,12 @@ socket.on('playerJoined', ({ players }) => {
 socket.on('gameStarted', () => {
   document.getElementById('startGameBtn').classList.add('d-none');
   document.getElementById('newRoundBtn').classList.remove('d-none');
-  document.getElementById('instructions').innerText = "Game started! Look at your number and place your card when ready.";
+  document.getElementById('instructions').innerText = "Game started! Wait for your number...";
 });
 
 socket.on('assignedNumber', (number) => {
   playerNumber = number;
+  hasPlacedCard = false;
   document.getElementById('cardNumber').innerText = number;
   document.getElementById('playerCard').classList.remove('placed');
   document.getElementById('instructions').innerText = "Place your card when you're ready!";
@@ -103,6 +106,7 @@ socket.on('roundStarted', () => {
   document.getElementById('result').classList.add('d-none');
   document.getElementById('placedCardsCount').innerText = '0';
   document.getElementById('instructions').innerText = "New round started! Wait for your number...";
+  hasPlacedCard = false;
 });
 
 socket.on('playerLeft', ({ players }) => {
