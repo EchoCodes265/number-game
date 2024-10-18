@@ -52,7 +52,11 @@ io.on('connection', (socket) => {
   socket.on('placeCard', ({ roomCode, number }) => {
     if (!rooms[roomCode] || !rooms[roomCode].roundStarted) return;
 
+    const playerIndex = rooms[roomCode].players.findIndex(player => player.id === socket.id);
+    if (playerIndex === -1 || rooms[roomCode].players[playerIndex].hasPlaced) return;
+
     rooms[roomCode].placedCards.push(number);
+    rooms[roomCode].players[playerIndex].hasPlaced = true;
     const playerCount = rooms[roomCode].players.length;
 
     if (rooms[roomCode].placedCards.length === playerCount) {
@@ -67,6 +71,7 @@ io.on('connection', (socket) => {
   socket.on('newRound', (roomCode) => {
     if (!rooms[roomCode]) return;
     rooms[roomCode].placedCards = [];
+    rooms[roomCode].players.forEach(player => player.hasPlaced = false);
     assignNumbers(roomCode);
     io.to(roomCode).emit('roundStarted');
   });
@@ -102,6 +107,7 @@ function generateUniqueRandomNumbers(count, min, max) {
   return Array.from(numbers);
 }
 
-server.listen(3000, () => {
-  console.log('Server running on http://localhost:3000');
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
